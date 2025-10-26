@@ -1,6 +1,9 @@
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { ThemeToggleButton } from "@/components/ui/skipper26";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
@@ -34,6 +37,7 @@ export default function Home() {
             center.
           </p>
         </div>
+
         <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
           <a
             className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
@@ -51,13 +55,38 @@ export default function Home() {
             Deploy Now
           </a>
           <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
+            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/8 px-5 transition-colors hover:border-transparent hover:bg-black/4 dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
             href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
             target="_blank"
             rel="noopener noreferrer"
           >
             Documentation
           </a>
+        </div>
+        <div className="flex items-center gap-6">
+          <Spinner className="size-6 text-red-500" />
+          <Spinner className="size-6 text-green-500" />
+          <Spinner className="size-6 text-blue-500" />
+          <Spinner className="size-6 text-yellow-500" />
+          <Spinner className="size-6 text-purple-500" />
+        </div>
+        <div className="flex items-center gap-6">
+          <ThemeToggleButton variant="rectangle" start="left-right" blur />
+        </div>
+
+        <div className="flex flex-col items-center gap-4">
+          <Button disabled size="sm">
+            <Spinner />
+            Loading...
+          </Button>
+          <Button variant="outline" disabled size="sm">
+            <Spinner />
+            Please wait
+          </Button>
+          <Button variant="secondary" disabled size="sm">
+            <Spinner />
+            Processing
+          </Button>
         </div>
       </main>
     </div>
