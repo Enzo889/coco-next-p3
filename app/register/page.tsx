@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
-import { UserIcon } from "lucide-react";
+import { LockIcon, MailIcon, UserIcon } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { JSX, SVGProps, useState } from "react";
@@ -160,17 +160,22 @@ export default function RegisterPage() {
                 >
                   Email
                 </Label>
-                <Input
-                  type="email"
-                  id="email-register"
-                  name="email"
-                  autoComplete="email"
-                  placeholder="your.email@example.com"
-                  className="mt-2 border-primary-foreground/50"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+                <div className="relative mt-2">
+                  <div className="text-muted-foreground pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-3 peer-disabled:opacity-50">
+                    <MailIcon className="size-4" />
+                  </div>
+                  <Input
+                    type="email"
+                    id="email-register"
+                    name="email"
+                    autoComplete="email"
+                    placeholder="your.email@example.com"
+                    className=" border-primary-foreground/50 peer pl-9"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
 
               {/* Campo Contraseña */}
@@ -181,17 +186,23 @@ export default function RegisterPage() {
                 >
                   Password
                 </Label>
-                <Input
-                  type="password"
-                  id="password-register"
-                  name="password"
-                  autoComplete="new-password"
-                  placeholder="Password"
-                  className="mt-2 border-primary-foreground/50"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+
+                <div className="relative mt-2">
+                  <div className="text-muted-foreground pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-3 peer-disabled:opacity-50">
+                    <LockIcon className="size-4" />
+                  </div>
+                  <Input
+                    type="password"
+                    id="password-register"
+                    name="password"
+                    autoComplete="new-password"
+                    placeholder="Password"
+                    className=" border-primary-foreground/50 peer pl-9"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
 
               {/* Campo Confirmar Contraseña */}
@@ -202,17 +213,23 @@ export default function RegisterPage() {
                 >
                   Confirm password
                 </Label>
-                <Input
-                  type="password"
-                  id="confirm-password-register"
-                  name="confirm-password"
-                  autoComplete="new-password"
-                  placeholder="Password"
-                  className="mt-2 border-primary-foreground/50"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
+
+                <div className="relative mt-2">
+                  <div className="text-muted-foreground pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-3 peer-disabled:opacity-50">
+                    <LockIcon className="size-4" />
+                  </div>
+                  <Input
+                    type="password"
+                    id="confirm-password-register"
+                    name="confirm-password"
+                    autoComplete="new-password"
+                    placeholder="Password"
+                    className=" border-primary-foreground/50 peer pl-9"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
 
               {/* Botón de Envío */}

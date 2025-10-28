@@ -14,6 +14,7 @@ import {
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { LockIcon, MailIcon } from "lucide-react";
 
 export default function LoginPage() {
   const [errors, setErrors] = useState<string[]>([]);
@@ -62,17 +63,23 @@ export default function LoginPage() {
                   >
                     Email
                   </Label>
-                  <Input
-                    type="email"
-                    id="email-login-03"
-                    name="email"
-                    autoComplete="email"
-                    placeholder="your@email.here"
-                    className="mt-2   border-primary-foreground/50 "
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    required
-                  />
+
+                  <div className="relative mt-2">
+                    <div className="text-muted-foreground pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-3 peer-disabled:opacity-50">
+                      <MailIcon className="size-4" />
+                    </div>
+                    <Input
+                      type="email"
+                      id="email-login-03"
+                      name="email"
+                      autoComplete="email"
+                      placeholder="your@email.here"
+                      className=" border-primary-foreground/50 peer pl-9 "
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -82,17 +89,22 @@ export default function LoginPage() {
                   >
                     Password
                   </Label>
-                  <Input
-                    type="password"
-                    id="password-login-03"
-                    name="password"
-                    autoComplete="current-password"
-                    placeholder="**************"
-                    className="mt-2 border-primary-foreground/50 "
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    required
-                  />
+                  <div className="relative mt-2">
+                    <div className="text-muted-foreground pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-3 peer-disabled:opacity-50">
+                      <LockIcon className="size-4" />
+                    </div>
+                    <Input
+                      type="password"
+                      id="password-login-03"
+                      name="password"
+                      autoComplete="current-password"
+                      placeholder="password"
+                      className="border-primary-foreground/50 peer pl-9"
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
 
                 <Button
