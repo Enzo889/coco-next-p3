@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Logo } from "./icons/logo";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -43,11 +44,9 @@ const Navbar = () => {
         <div className="flex h-14 sm:h-16 items-center justify-between">
           {/* Logo and Company Name */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-primary">
-              <Bell className="h-4 w-4 sm:h-6 sm:w-6 text-primary-foreground" />
-            </div>
+            <Logo className="h-8 w-8" />
             <span className="text-base sm:text-xl font-bold text-foreground">
-              PeticionesApp
+              Integracion Comunitaria
             </span>
           </div>
 
@@ -106,13 +105,18 @@ const Navbar = () => {
                         </div>
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Mi Perfil</span>
+                      <DropdownMenuItem asChild>
+                        <Link href={"/dashboard"}>
+                          <User className="mr-2 h-4 w-4" />
+                          <span>Inicio</span>
+                        </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Bell className="mr-2 h-4 w-4" />
-                        <span>Mis Peticiones</span>
+                      <DropdownMenuItem asChild>
+                        <Link href={"/dashboard/petitions"}>
+                          <Bell className="mr-2 h-4 w-4" />
+
+                          <span>Mis Peticiones</span>
+                        </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
