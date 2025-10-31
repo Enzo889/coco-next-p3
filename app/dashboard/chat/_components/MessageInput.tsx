@@ -85,10 +85,10 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           onKeyPress={handleKeyPress}
           placeholder="Escribe un mensaje..."
           disabled={disabled}
-          className="flex-1"
+          className="flex-1 text-foreground bg-yellow-300 dark:bg-secondary"
         />
         <Button type="submit" disabled={!message.trim() || disabled}>
-          <Send className="h-4 w-4" />
+          <Send className="h-4 w-4 text-black" />
         </Button>
       </div>
     </form>

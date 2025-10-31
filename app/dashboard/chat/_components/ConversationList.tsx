@@ -61,8 +61,8 @@ export const ConversationList: React.FC<ConversationListProps> = ({
           <Card
             key={conv.userId}
             className={cn(
-              "p-4 cursor-pointer hover:bg-gray-50 transition-colors border-0 border-b rounded-none",
-              isSelected && "bg-blue-50"
+              "p-4 cursor-pointer hover:bg-primary/10 transition-colors border-0 border-b rounded-none",
+              isSelected && "bg-primary/20"
             )}
             onClick={() => onSelectConversation(conv.userId)}
           >
@@ -80,15 +80,15 @@ export const ConversationList: React.FC<ConversationListProps> = ({
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-semibold text-gray-800 truncate">
+                  <h3 className="font-semibold text-primary dark:text-primary-foreground truncate">
                     {conv.userName}
                   </h3>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-primary dark:text-primary-foreground">
                     {formatDate(conv.lastMessageDate)}
                   </span>
                 </div>
 
-                <p className="text-sm text-gray-500 truncate">
+                <p className="text-sm ttext-primary dark:text-primary-foreground truncate">
                   {conv.lastMessage}
                 </p>
               </div>

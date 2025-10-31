@@ -5,6 +5,7 @@ import {
   ContactRoundIcon,
   Home,
   LibraryBigIcon,
+  MessageCircle,
   StickyNoteIcon,
 } from "lucide-react";
 
@@ -29,7 +30,7 @@ const dashboardRoutes: Route[] = [
     id: "home",
     title: "Inicio",
     icon: <Home className="size-4" />,
-    link: "dashboard",
+    link: "/dashboard",
   },
   {
     id: "interest",
@@ -54,6 +55,12 @@ const dashboardRoutes: Route[] = [
     title: "Mis postulaciones",
     icon: <ContactRoundIcon className="size-4" />,
     link: "dashboard/postulations",
+  },
+  {
+    id: "conversations",
+    title: "Mis Conversaciones",
+    icon: <MessageCircle className="size-4" />,
+    link: "dashboard/chat",
   },
 ];
 

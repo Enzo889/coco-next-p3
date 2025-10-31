@@ -1,36 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { LogOut, Loader2 } from "lucide-react";
 import { ChatContainer } from "./_components/ChatContainer";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function ChatPage() {
-  const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+      <div className="relative h-screen w-screen flex items-center justify-center">
+        <Spinner />
       </div>
     );
   }
 
   return (
-    <div className="relative h-screen">
-      <Button
-        onClick={() => signOut()}
-        variant="ghost"
-        className="absolute top-4 right-4 z-50"
-        size="sm"
-      >
-        <LogOut className="h-4 w-4 mr-2" />
-        Cerrar Sesión
-      </Button>
-
+    <div className="flex-1 ">
       <ChatContainer />
     </div>
   );
