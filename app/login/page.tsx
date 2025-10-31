@@ -47,10 +47,10 @@ export default function LoginPage() {
           <Card>
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold text-foreground">
-                Welcome Back 👋
+                Bienvenido de nuevo 👋
               </CardTitle>
               <CardDescription className="mt-2 text-sm text-muted-foreground">
-                Enter your credentials to access your account.
+                Introduce tus datos para acceder a tu cuenta.
               </CardDescription>
             </CardHeader>
 
@@ -61,7 +61,7 @@ export default function LoginPage() {
                     htmlFor="email-login-03"
                     className="text-sm font-medium text-foreground"
                   >
-                    Email
+                    Correo electrónico
                   </Label>
 
                   <div className="relative mt-2">
@@ -73,7 +73,7 @@ export default function LoginPage() {
                       id="email-login-03"
                       name="email"
                       autoComplete="email"
-                      placeholder="your@email.here"
+                      placeholder="tu@correo.aqui"
                       className=" border-primary-foreground/50 peer pl-9 "
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
@@ -87,7 +87,7 @@ export default function LoginPage() {
                     htmlFor="password-login-03"
                     className="text-sm font-medium text-foreground"
                   >
-                    Password
+                    Contraseña
                   </Label>
                   <div className="relative mt-2">
                     <div className="text-muted-foreground pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-3 peer-disabled:opacity-50">
@@ -98,7 +98,7 @@ export default function LoginPage() {
                       id="password-login-03"
                       name="password"
                       autoComplete="current-password"
-                      placeholder="password"
+                      placeholder="contraseña"
                       className="border-primary-foreground/50 peer pl-9"
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
@@ -111,7 +111,7 @@ export default function LoginPage() {
                   type="submit"
                   className="mt-6 w-full py-2 font-semibold cursor-pointer"
                 >
-                  Sign in
+                  Iniciar sesión
                 </Button>
               </form>
 
@@ -119,7 +119,7 @@ export default function LoginPage() {
                 <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
                   <ul className="list-disc ml-4 mb-0 space-y-1 text-sm">
                     {errors.map((error) => (
-                      <li key={error}>**Error:** {error}</li>
+                      <li key={error}>Error: {error}</li>
                     ))}
                   </ul>
                 </div>
@@ -128,21 +128,21 @@ export default function LoginPage() {
 
             <CardFooter className="flex flex-col gap-2">
               <p className="w-full text-center text-sm text-muted-foreground">
-                Forgot your password?{" "}
+                ¿Olvidaste tu contraseña?{" "}
                 <a
                   href="#"
                   className="font-medium text-primary hover:text-primary/90 transition-colors"
                 >
-                  Reset password
+                  Restablecer contraseña
                 </a>
               </p>
               <p className="w-full text-center text-sm text-muted-foreground">
-                Don&apos;t have an account?{" "}
+                ¿No tienes una cuenta?{" "}
                 <a
                   href="register"
                   className="font-medium text-primary hover:text-primary/90 transition-colors"
                 >
-                  Sign up
+                  Regístrate
                 </a>
               </p>
             </CardFooter>
