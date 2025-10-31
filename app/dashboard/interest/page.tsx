@@ -3,14 +3,13 @@ import { api } from "@/app/api/service";
 import type { INCategory } from "@/types/category.interface";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { InterestSelector } from "./__component/interest-selector";
 import { Spinner } from "@/components/ui/spinner";
 
 function InterestPage() {
   const { data: session, status } = useSession();
   const [categories, setCategories] = useState<INCategory[] | null>(null);
-  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [, setLoadingCategories] = useState(true);
 
   useEffect(() => {
     let mounted = true;

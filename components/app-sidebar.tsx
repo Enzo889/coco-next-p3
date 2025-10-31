@@ -36,31 +36,31 @@ const dashboardRoutes: Route[] = [
     id: "interest",
     title: "Mis intereses",
     icon: <LibraryBigIcon className="size-4" />,
-    link: "dashboard/interest",
+    link: "/dashboard/interest",
   },
   {
     id: "notifications",
     title: "Notificaciones",
     icon: <Bell className="size-4" />,
-    link: "dashboard/notifications",
+    link: "/dashboard/notifications",
   },
   {
     id: "petitions",
     title: "Mis peticiones",
     icon: <StickyNoteIcon className="size-4" />,
-    link: "dashboard/petitions",
+    link: "/dashboard/petitions",
   },
   {
     id: "postulations",
     title: "Mis postulaciones",
     icon: <ContactRoundIcon className="size-4" />,
-    link: "dashboard/postulations",
+    link: "/dashboard/postulations",
   },
   {
     id: "conversations",
     title: "Mis Conversaciones",
     icon: <MessageCircle className="size-4" />,
-    link: "dashboard/chat",
+    link: "/dashboard/chat",
   },
 ];
 

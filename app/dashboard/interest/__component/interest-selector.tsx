@@ -6,7 +6,7 @@ import { api } from "@/app/api/service";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, Loader2 } from "lucide-react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
@@ -48,7 +48,7 @@ export function InterestSelector({
     };
 
     fetchUserInterests();
-  }, [toast]);
+  }, []);
 
   const toggleInterest = async (categoryId: number) => {
     const isSelected = selectedInterests.has(categoryId);
