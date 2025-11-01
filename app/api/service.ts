@@ -89,7 +89,7 @@ export const api = {
     payload: Partial<INotification>,
     token?: string
   ): Promise<INotification> => {
-    const res = await client.put(
+    const res = await client.patch(
       `/notifications/${id}`,
       payload,
       authConfig(token)

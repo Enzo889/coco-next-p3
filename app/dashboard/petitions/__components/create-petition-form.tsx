@@ -122,8 +122,7 @@ export default function CreatePetitionForm({
       // Crear notificación para cada usuario interesado
       for (const userId of interestedUserIds) {
         await api.createNotification({
-          idProvider: session?.user?.id || 0,
-          idCustomer: userId,
+          idProvider: userId,
           type: "new_petition",
           message: `Nueva petición: ${petition.description}`,
           viewed: false,

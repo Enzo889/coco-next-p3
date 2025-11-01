@@ -1,7 +1,7 @@
 export interface INotification {
   idNotification?: number;
-  idProvider: number | null;
-  idCustomer: number | null;
+  idProvider?: number | null;
+  idCustomer?: number | null;
   type: string | null;
   message: string | null;
   viewed: boolean | null;
