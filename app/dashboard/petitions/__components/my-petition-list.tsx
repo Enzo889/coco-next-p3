@@ -75,7 +75,7 @@ export default function MyPetitionsList({
                   </CardTitle>
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="outline">
-                      {getCategoryName(petition.idTypePetition || 0)}
+                      {getCategoryName(petition.idCategory || 1)}
                     </Badge>
                     <Badge className={getStatusColor(petition.idState)}>
                       {petition.idState === 1
@@ -120,7 +120,7 @@ export default function MyPetitionsList({
                 </div>
                 <div>
                   <p className="text-muted-foreground">Postulantes</p>
-                  <p className="font-medium">6666666666666666</p>
+                  <p className="font-medium">88888</p>
                 </div>
               </div>
               <Button
