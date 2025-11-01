@@ -75,7 +75,7 @@ export default function MyPetitionsList({
                   </CardTitle>
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="outline">
-                      {getCategoryName(petition.idTypePetition || 0)}
+                      {getCategoryName(petition.idCategory || 0)}
                     </Badge>
                     <Badge className={getStatusColor(petition.idState)}>
                       {petition.idState === 1

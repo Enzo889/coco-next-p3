@@ -1,5 +1,5 @@
 export interface INotification {
-  idNotification: number;
+  idNotification?: number;
   idProvider: number | null;
   idCustomer: number | null;
   type: string | null;
@@ -7,7 +7,7 @@ export interface INotification {
   viewed: boolean | null;
   idUserUpdate: number | null;
   idUserCreate: number | null;
-  dateUpdate: Date | null;
-  dateCreate: Date | null;
+  dateUpdate?: Date | null;
+  dateCreate?: Date | null;
   deleted: boolean | null;
 }
