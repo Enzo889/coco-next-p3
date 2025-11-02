@@ -15,6 +15,9 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const [loading, setLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [petitionIdMap, setPetitionIdMap] = useState<Record<number, number>>(
+    {}
+  );
 
   // Cargar notificaciones y configurar polling
   useEffect(() => {
@@ -35,6 +38,18 @@ export default function NotificationsPage() {
       );
 
       setNotifications(userNotifications);
+
+      const newPetitionIdMap: Record<number, number> = {};
+      userNotifications.forEach((notif) => {
+        if (notif.type === "new_petition" && notif.message) {
+          const match = notif.message.match(/#(\d+)/);
+          if (match) {
+            const petitionId = Number.parseInt(match[1], 10);
+            newPetitionIdMap[notif.idNotification || 0] = petitionId;
+          }
+        }
+      });
+      setPetitionIdMap(newPetitionIdMap);
 
       // Contar notificaciones no vistas
       const unread = userNotifications.filter((n) => !n.viewed).length;
@@ -105,11 +120,7 @@ export default function NotificationsPage() {
             )}
           </div>
           <div className="flex items-center gap-4">
-            <Button
-              onClick={loadNotifications}
-              className="cursor-pointer"
-
-            >
+            <Button onClick={loadNotifications} className="cursor-pointer">
               <RefreshCw />
             </Button>
           </div>
@@ -126,6 +137,7 @@ export default function NotificationsPage() {
             notifications={notifications}
             onMarkAsViewed={handleMarkAsViewed}
             onDelete={handleDeleteNotification}
+            petitionIdMap={petitionIdMap}
           />
         )}
       </div>

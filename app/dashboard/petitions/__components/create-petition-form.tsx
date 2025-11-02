@@ -119,12 +119,16 @@ export default function CreatePetitionForm({
         )
         .map((ui) => ui.idUser);
 
+      const notificationMessage = `Nueva petición #${
+        petition.idPetition
+      }: ${petition.description?.substring(0, 50)}...`;
+
       // Crear notificación para cada usuario interesado
       for (const userId of interestedUserIds) {
         await api.createNotification({
           idProvider: userId,
           type: "new_petition",
-          message: `Nueva petición: ${petition.description}`,
+          message: notificationMessage,
           viewed: false,
           idUserUpdate: session?.user?.id || 0,
           idUserCreate: session?.user?.id || 0,

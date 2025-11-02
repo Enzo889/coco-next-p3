@@ -7,12 +7,14 @@ interface NotificationsListProps {
   notifications: INotification[];
   onMarkAsViewed: (id: number) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
+  petitionIdMap?: Record<number, number>;
 }
 
 export default function NotificationsList({
   notifications,
   onMarkAsViewed,
   onDelete,
+  petitionIdMap = {},
 }: NotificationsListProps) {
   const sortedNotifications = [...notifications].sort((a, b) => {
     const dateA = new Date(a.dateCreate || 0).getTime();
@@ -36,6 +38,7 @@ export default function NotificationsList({
               notification={notification}
               onMarkAsViewed={onMarkAsViewed}
               onDelete={onDelete}
+              petitionId={petitionIdMap[notification.idNotification || 0]}
             />
           ))}
         </div>
@@ -52,6 +55,7 @@ export default function NotificationsList({
               notification={notification}
               onMarkAsViewed={onMarkAsViewed}
               onDelete={onDelete}
+              petitionId={petitionIdMap[notification.idNotification || 0]}
             />
           ))}
         </div>

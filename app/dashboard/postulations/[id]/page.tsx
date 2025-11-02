@@ -112,7 +112,7 @@ export default function PetitionDetailPage() {
               </h1>
               <div className="flex gap-2 text-sm text-muted-foreground">
                 <span className="px-3 py-1 rounded-full bg-muted">
-                  {getCategoryName(petition.idTypePetition || 0)}
+                  {getCategoryName(petition.idCategory || 0)}
                 </span>
               </div>
             </div>

@@ -3,23 +3,27 @@
 import type { INotification } from "@/types/notification.interface";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trash2, CheckCircle2, Circle } from "lucide-react";
+import { Trash2, CheckCircle2, Circle, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { TYPE_PETITION } from "@/types/type_petition.enum";
+import { useRouter } from "next/navigation";
 
 interface NotificationCardProps {
   notification: INotification;
   onMarkAsViewed: (id: number) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
+  petitionId?: number;
 }
 
 export default function NotificationCard({
   notification,
   onMarkAsViewed,
   onDelete,
+  petitionId,
 }: NotificationCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isMarking, setIsMarking] = useState(false);
+  const router = useRouter();
 
   const handleMarkAsViewed = async () => {
     setIsMarking(true);
@@ -36,6 +40,12 @@ export default function NotificationCard({
       await onDelete(notification.idNotification || 0);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleNavigateToPetition = () => {
+    if (petitionId) {
+      router.push(`/dashboard/postulations/${petitionId}`);
     }
   };
 
@@ -93,7 +103,8 @@ export default function NotificationCard({
         notification.viewed
           ? "bg-muted/30 opacity-75"
           : `${typeInfo.color} border-l-blue-500`
-      }`}
+      } ${petitionId ? "cursor-pointer hover:shadow-md" : ""}`}
+      onClick={petitionId ? handleNavigateToPetition : undefined}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
@@ -126,11 +137,17 @@ export default function NotificationCard({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          {petitionId && (
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+          )}
           {!notification.viewed && (
             <Button
               variant="ghost"
               size="sm"
-              onClick={handleMarkAsViewed}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleMarkAsViewed();
+              }}
               disabled={isMarking}
               className="cursor-pointer"
               title="Marcar como leída"
@@ -141,10 +158,12 @@ export default function NotificationCard({
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleDelete}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete();
+            }}
             disabled={isDeleting}
             title="Eliminar"
-            className="cursor-pointer"
           >
             <Trash2 className="w-4 h-4 text-destructive" />
           </Button>
