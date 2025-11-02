@@ -200,7 +200,7 @@ export const api = {
     payload: Partial<IPostulation>,
     token?: string
   ): Promise<IPostulation> => {
-    const res = await client.put(
+    const res = await client.patch(
       `/postulations/${id}`,
       payload,
       authConfig(token)
@@ -316,6 +316,17 @@ export const chatApi = {
     const { data } = await axiosInstance.post(`/chat/mark-read/${otherUserId}`);
     return data;
   },
+
+    sendMessage: async (payload: {
+    receiverId: number;
+    content: string;
+    petitionId?: number;
+  }) => {
+    const { data } = await axiosInstance.post("/chat/send", payload);
+    return data;
+  },
+
+  
 };
 
 export const usersApi = {

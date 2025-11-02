@@ -9,6 +9,7 @@ import { es } from "date-fns/locale";
 import { IPostulation } from "@/types/postulation.interface";
 import { api } from "@/app/api/service";
 import { toast } from "sonner";
+import { MessageCircleIcon } from "lucide-react";
 
 interface PostulationsListProps {
   petitionId: number;
@@ -100,19 +101,26 @@ export default function PostulationsList({
               <div>
                 <p className="text-muted-foreground">Fecha</p>
                 <p className="font-medium">
-                  {format(new Date(postulation.dateCreate), "d MMM", {
+                  {format(new Date(postulation.dateCreate || 0), "d MMM", {
                     locale: es,
                   })}
                 </p>
               </div>
             </div>
-            {!postulation.winner && (
+            {!postulation.winner ? (
               <Button
-                onClick={() => handleSelectWinner(postulation.idpostulation)}
+                onClick={() =>
+                  handleSelectWinner(postulation.idpostulation || 1)
+                }
                 variant="outline"
                 className="w-full mt-2"
               >
                 Seleccionar como Ganador
+              </Button>
+            ) : (
+              <Button className="w-full mt-2 cursor-pointer">
+                {" "}
+                <MessageCircleIcon /> Comunicarse
               </Button>
             )}
           </CardContent>

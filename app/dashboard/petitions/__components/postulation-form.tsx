@@ -48,7 +48,6 @@ export default function PostulationForm({
       setLoading(true);
 
       const newPostulation: IPostulation = {
-        idpostulation: 0,
         idPetition: petitionId.toString(),
         idProvider: session?.user?.id?.toString() || "",
         winner: false,
@@ -57,8 +56,6 @@ export default function PostulationForm({
         idState: 1, // Pendiente
         idUserCreate: session?.user?.id?.toString() || "",
         idUserUpdate: session?.user?.id?.toString() || "",
-        dateCreate: new Date(),
-        dateUpdate: new Date(),
       };
 
       await api.createPostulation(newPostulation);

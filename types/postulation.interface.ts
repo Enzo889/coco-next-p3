@@ -1,5 +1,5 @@
 export interface IPostulation {
-  idpostulation: number;
+  idpostulation?: number;
   idPetition: string | null; // Mapeado desde 'bigint'
   idProvider: string | null; // Mapeado desde 'bigint'
   winner: boolean;
@@ -8,6 +8,6 @@ export interface IPostulation {
   idState: number | null;
   idUserCreate: string | null; // Mapeado desde 'bigint'
   idUserUpdate: string | null; // Mapeado desde 'bigint'
-  dateCreate: Date;
-  dateUpdate: Date;
+  dateCreate?: Date;
+  dateUpdate?: Date;
 }
