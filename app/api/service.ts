@@ -317,7 +317,7 @@ export const chatApi = {
     return data;
   },
 
-    sendMessage: async (payload: {
+  sendMessage: async (payload: {
     receiverId: number;
     content: string;
     petitionId?: number;
@@ -325,8 +325,6 @@ export const chatApi = {
     const { data } = await axiosInstance.post("/chat/send", payload);
     return data;
   },
-
-  
 };
 
 export const usersApi = {

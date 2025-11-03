@@ -10,6 +10,8 @@ import { IPostulation } from "@/types/postulation.interface";
 import { api } from "@/app/api/service";
 import { toast } from "sonner";
 import { MessageCircleIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Spinner } from "@/components/ui/spinner";
 
 interface PostulationsListProps {
   petitionId: number;
@@ -18,8 +20,10 @@ interface PostulationsListProps {
 export default function PostulationsList({
   petitionId,
 }: PostulationsListProps) {
+  const router = useRouter();
   const [postulations, setPostulations] = useState<IPostulation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [redirecting, setRedirecting] = useState<number | null>(null);
 
   useEffect(() => {
     loadPostulations();
@@ -55,6 +59,39 @@ export default function PostulationsList({
       toast.error("Error", {
         description: "No se pudo seleccionar el ganador",
       });
+    }
+  };
+
+  const handleStartChat = async (postulation: IPostulation) => {
+    try {
+      setRedirecting(postulation.idpostulation || null);
+
+      // Aquí puedes obtener el ID del usuario del proveedor
+      // Asumiendo que la postulación tiene un campo idProvider o similar
+      const providerId = postulation.idProvider; // Ajusta según tu estructura
+
+      if (!providerId) {
+        toast.error("Error", {
+          description: "No se pudo identificar al proveedor",
+        });
+        return;
+      }
+
+      // Redirigir al chat con el parámetro del usuario
+      router.push(
+        `/dashboard/chat?userId=${providerId}&petitionId=${petitionId}`
+      );
+
+      toast.success("Redirigiendo", {
+        description: "Abriendo chat con el proveedor...",
+      });
+    } catch (error) {
+      console.error("Error starting chat:", error);
+      toast.error("Error", {
+        description: "No se pudo iniciar la conversación",
+      });
+    } finally {
+      setRedirecting(null);
     }
   };
 
@@ -118,9 +155,22 @@ export default function PostulationsList({
                 Seleccionar como Ganador
               </Button>
             ) : (
-              <Button className="w-full mt-2 cursor-pointer">
-                {" "}
-                <MessageCircleIcon /> Comunicarse
+              <Button
+                onClick={() => handleStartChat(postulation)}
+                disabled={redirecting === postulation.idpostulation}
+                className="w-full mt-2 bg-blue-500 hover:bg-blue-600"
+              >
+                {redirecting === postulation.idpostulation ? (
+                  <>
+                    <Spinner />
+                    Abriendo chat...
+                  </>
+                ) : (
+                  <>
+                    <MessageCircleIcon className="mr-2 h-4 w-4" />
+                    Comunicarse
+                  </>
+                )}
               </Button>
             )}
           </CardContent>

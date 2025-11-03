@@ -23,9 +23,12 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 export const ChatContainer: React.FC = () => {
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
   const { socket, isConnected } = useSocket({});
   const {
     messages,
@@ -45,12 +48,33 @@ export const ChatContainer: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSidebar] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [petitionId, setPetitionId] = useState<number | null>(null);
 
   useEffect(() => {
     if (isConnected) {
       loadConversations();
     }
   }, [isConnected, loadConversations]);
+
+  // Manejar parámetros de URL (cuando viene desde postulaciones)
+  useEffect(() => {
+    const userIdParam = searchParams.get("userId");
+    const petitionIdParam = searchParams.get("petitionId");
+
+    if (userIdParam && isConnected) {
+      const userId = parseInt(userIdParam);
+      setPetitionId(petitionIdParam ? parseInt(petitionIdParam) : null);
+
+      // Esperar a que se carguen las conversaciones
+      setTimeout(() => {
+        // eslint-disable-next-line react-hooks/immutability
+        handleSelectConversation(userId);
+        toast.success("Chat iniciado", {
+          description: "Puedes comenzar a comunicarte con el proveedor",
+        });
+      }, 1000);
+    }
+  }, [searchParams, isConnected]);
 
   const handleSelectConversation = async (userId: number) => {
     setSelectedUserId(userId);
@@ -218,7 +242,7 @@ export const ChatContainer: React.FC = () => {
                   <div className="relative">
                     <Avatar className="h-11 w-11 ring-2 ring-white">
                       <AvatarFallback className="bg-linear-to-br from-blue-400 to-purple-500 text-white font-semibold">
-                        {getInitials(selectedUserName)}
+                        {getInitials(selectedUserName || "p")}
                       </AvatarFallback>
                     </Avatar>
                     {isUserOnline && (
@@ -230,6 +254,11 @@ export const ChatContainer: React.FC = () => {
                     <h3 className="font-semibold text-gray-900 text-[15px]">
                       {selectedUserName}
                     </h3>
+                    {petitionId && (
+                      <p className="text-xs text-blue-600">
+                        Petición #{petitionId}
+                      </p>
+                    )}
                     {isUserTyping ? (
                       <p className="text-xs text-blue-500 font-medium">
                         escribiendo...
