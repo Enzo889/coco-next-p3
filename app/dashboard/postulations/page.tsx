@@ -56,7 +56,7 @@ export default function PostulationsPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="flex justify-center w-xl items-center min-h-screen">
+       <div className="flex w-[80vw] justify-center items-center min-h-screen">
         <Spinner />
       </div>
     );

@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { IPostulation } from "@/types/postulation.interface";
 import { api } from "@/app/api/service";
+import { TYPE_PETITION } from "@/types/type_petition.enum";
 
 interface PostulationFormProps {
   petitionId: number;
@@ -59,6 +60,28 @@ export default function PostulationForm({
       };
 
       await api.createPostulation(newPostulation);
+      try {
+        const petition = await api.getPetition(petitionId);
+        if (petition.idUserCreate) {
+          await api.createNotification({
+            idProvider: petition.idUserCreate,
+            type: TYPE_PETITION.newPostulation,
+            message: `Nueva postulación en tu petición: ${petition.description?.substring(
+              0,
+              40
+            )}...`,
+            viewed: false,
+            idUserUpdate: session?.user?.id || 0,
+            idUserCreate: session?.user?.id || 0,
+            deleted: false,
+          });
+        }
+      } catch (notificationError) {
+        console.error(
+          "[v0] Error sending postulation notification:",
+          notificationError
+        );
+      }
 
       toast.success("Exito", {
         description: "Postulación creada exitosamente",

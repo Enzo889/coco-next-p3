@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/app/api/service";
 import MyPetitionsList from "./__components/petition-list";
 import CreatePetitionForm from "./__components/create-petition-form";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function PetitionsPage() {
   const { data: session, status } = useSession();
@@ -53,8 +54,8 @@ export default function PetitionsPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        Cargando...
+      <div className="flex w-[80vw] justify-center items-center min-h-screen">
+        <Spinner />
       </div>
     );
   }
@@ -62,7 +63,8 @@ export default function PetitionsPage() {
   if (status === "unauthenticated") {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        Por favor inicia sesión
+        Por favor
+        <a href="/login">inicia sesión</a>
       </div>
     );
   }

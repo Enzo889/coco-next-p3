@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { api } from "@/app/api/service";
+import { TYPE_PETITION } from "@/types/type_petition.enum";
 
 interface CreatePetitionFormProps {
   categories: INCategory[];
@@ -127,7 +128,7 @@ export default function CreatePetitionForm({
       for (const userId of interestedUserIds) {
         await api.createNotification({
           idProvider: userId,
-          type: "new_petition",
+          type: TYPE_PETITION.newPetition,
           message: notificationMessage,
           viewed: false,
           idUserUpdate: session?.user?.id || 0,

@@ -1,8 +1,9 @@
+import { TYPE_PETITION } from "./type_petition.enum";
 export interface INotification {
   idNotification?: number;
   idProvider?: number | null;
   idCustomer?: number | null;
-  type: string | null;
+  type: TYPE_PETITION;
   message: string | null;
   viewed: boolean | null;
   idUserUpdate: number | null;

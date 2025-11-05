@@ -77,7 +77,7 @@ export default function NotificationCard({
       case TYPE_PETITION.petitionSelected:
         return {
           label: "Postulación Aceptada",
-          color: "bg-emerald-50 border-emerald-200",
+          color: "bg-emerald-500 border-emerald-200",
           textColor: "text-emerald-500 dark:text-emerald-50",
         };
       case TYPE_PETITION.petitionRejected:

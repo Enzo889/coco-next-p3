@@ -19,16 +19,17 @@ import {
   TrendingUp,
   AlertCircle,
 } from "lucide-react";
-import { api, authApi } from "@/app/api/service";
+import { api } from "@/app/api/service";
 import type { IPetition } from "@/types/petition.interface";
 import type { INotification } from "@/types/notification.interface";
 import { useSession } from "next-auth/react";
+import { IPostulation } from "@/types/postulation.interface";
+import { getPetitionTitle } from "@/lib/utils";
 
 export default function HomePage() {
-  const [userId, setUserId] = useState<number | null>(null);
   const [petitions, setPetitions] = useState<IPetition[]>([]);
   const [notifications, setNotifications] = useState<INotification[]>([]);
-  const [postulations, setPostulations] = useState<any[]>([]);
+  const [postulations, setPostulations] = useState<IPostulation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,10 +39,6 @@ export default function HomePage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-
-        // Get user profile
-        const profile = await authApi.getProfile();
-        setUserId(profile.id);
 
         // Get petitions
         const petitionsData = await api.getPetitions();
@@ -66,36 +63,41 @@ export default function HomePage() {
     fetchData();
   }, []);
 
-  const myPetitions = userId
-    ? petitions.filter((p: IPetition) => p.idUserCreate === userId).slice(0, 3)
+  const myPetitions = session?.user.id
+    ? petitions
+        .filter((p: IPetition) => p.idUserCreate === session?.user.id)
+        .slice(0, 3)
     : [];
 
-  const unreadNotifications = userId
+  const unreadNotifications = session?.user.id
     ? notifications.filter(
-        (n: INotification) => !n.viewed && n.idProvider === userId
+        (n: INotification) => !n.viewed && n.idProvider === session?.user.id
       )
     : [];
 
-  const recentActivities = userId
+  const recentActivities = session?.user.id
     ? notifications
-        .filter((n: INotification) => n.idProvider === userId)
+        .filter((n: INotification) => n.idProvider === session?.user.id)
         .slice(0, 4)
     : [];
 
   const activeProjectsCount = myPetitions.filter(
     (p: IPetition) => p.idState === 1
   ).length;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const totalPostulationsReceived = postulations.filter((post: any) => {
     const petitionForPost = petitions.find(
       (p: IPetition) => p.idPetition === post.idPetition
     );
-    return petitionForPost?.idUserCreate === userId;
+    return petitionForPost?.idUserCreate === session?.user.id;
   }).length;
 
   const successRate = 92;
 
   const availableOpportunities = petitions
-    .filter((p: IPetition) => p.idUserCreate !== userId && p.idState === 1)
+    .filter(
+      (p: IPetition) => p.idUserCreate !== session?.user.id && p.idState === 1
+    )
     .slice(0, 3);
 
   if (error) {
@@ -337,7 +339,7 @@ export default function HomePage() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="font-medium text-xs sm:text-sm line-clamp-1">
-                                {activity.type}
+                                {getPetitionTitle(activity.type)}{" "}
                               </p>
                               <p className="text-xs text-muted-foreground line-clamp-2">
                                 {activity.message}

@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Bell, CheckCircle2, Users } from "lucide-react";
 
 export default function HomePage() {
-
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -37,7 +35,7 @@ export default function HomePage() {
                 </Button>
                 <Button
                   size="lg"
-                  variant="outline"
+                  variant="ghost"
                   className="text-base bg-transparent w-full sm:w-auto"
                 >
                   Explorar Peticiones

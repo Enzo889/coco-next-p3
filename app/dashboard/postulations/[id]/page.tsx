@@ -11,6 +11,8 @@ import { api } from "@/app/api/service";
 import { toast } from "sonner";
 import PostulationsList from "../../petitions/__components/postulation-list";
 import PostulationForm from "../../petitions/__components/postulation-form";
+import { ChevronLeft } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function PetitionDetailPage() {
   const { data: session, status } = useSession();
@@ -67,8 +69,8 @@ export default function PetitionDetailPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        Cargando...
+      <div className="flex w-[80vw] justify-center items-center min-h-screen">
+        <Spinner />
       </div>
     );
   }
@@ -95,12 +97,8 @@ export default function PetitionDetailPage() {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        <Button
-          onClick={() => router.back()}
-          variant="outline"
-          className="mb-6"
-        >
-          Volver
+        <Button onClick={() => router.back()} variant="ghost" className="mb-6">
+          <ChevronLeft className="w-4 h-4" /> Volver
         </Button>
 
         <div className="grid gap-6">

@@ -19,12 +19,14 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import type React from "react";
 import { useState } from "react";
+import { Badge } from "./ui/badge";
 
 export type Route = {
   id: string;
   title: string;
   icon?: React.ReactNode;
   link: string;
+  badge?: number;
   subs?: {
     title: string;
     link: string;
@@ -116,9 +118,19 @@ export default function DashboardNavigation({ routes }: { routes: Route[] }) {
                 >
                   {route.icon}
                   {!isCollapsed && (
-                    <span className="ml-2 text-sm font-medium">
-                      {route.title}
-                    </span>
+                    <>
+                      <span className="ml-2 text-sm font-medium">
+                        {route.title}
+                      </span>
+                      {route.badge && (
+                        <Badge
+                          variant="default"
+                          className="ml-auto rounded-full h-5 w-5 flex items-center justify-center text-xs p-0"
+                        >
+                          {route.badge}
+                        </Badge>
+                      )}
+                    </>
                   )}
                 </Link>
               </SidebarMenuButton>

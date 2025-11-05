@@ -24,45 +24,10 @@ import { motion } from "motion/react";
 import { Logo } from "./icons/logo";
 import DashboardNavigation, { Route } from "./nav-main";
 import { ThemeToggleButton } from "./ui/skipper26";
-
-const dashboardRoutes: Route[] = [
-  {
-    id: "home",
-    title: "Inicio",
-    icon: <Home className="size-4" />,
-    link: "/dashboard",
-  },
-  {
-    id: "interest",
-    title: "Mis intereses",
-    icon: <LibraryBigIcon className="size-4" />,
-    link: "/dashboard/interest",
-  },
-  {
-    id: "notifications",
-    title: "Notificaciones",
-    icon: <Bell className="size-4" />,
-    link: "/dashboard/notifications",
-  },
-  {
-    id: "petitions",
-    title: "Mis peticiones",
-    icon: <StickyNoteIcon className="size-4" />,
-    link: "/dashboard/petitions",
-  },
-  {
-    id: "postulations",
-    title: "Mis postulaciones",
-    icon: <ContactRoundIcon className="size-4" />,
-    link: "/dashboard/postulations",
-  },
-  {
-    id: "conversations",
-    title: "Mis Conversaciones",
-    icon: <MessageCircle className="size-4" />,
-    link: "/dashboard/chat",
-  },
-];
+import { INotification } from "@/types/notification.interface";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { api } from "@/app/api/service";
 
 const sampleNotifications = [
   {
@@ -91,6 +56,70 @@ const sampleNotifications = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+  const { data: session, status } = useSession();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.id) {
+      const loadUnreadCount = async () => {
+        try {
+          const allNotifications: INotification[] =
+            await api.getNotifications();
+          const userNotifications = allNotifications.filter(
+            (notif) => notif.idProvider === session?.user?.id
+          );
+          const unread = userNotifications.filter((n) => !n.viewed).length;
+          setUnreadCount(unread);
+        } catch (error) {
+          console.error("[v0] Error loading unread count:", error);
+        }
+      };
+
+      loadUnreadCount();
+      const interval = setInterval(loadUnreadCount, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [status, session?.user?.id]);
+
+  const dashboardRoutes: Route[] = [
+    {
+      id: "home",
+      title: "Inicio",
+      icon: <Home className="size-4" />,
+      link: "/dashboard",
+    },
+    {
+      id: "interest",
+      title: "Mis intereses",
+      icon: <LibraryBigIcon className="size-4" />,
+      link: "/dashboard/interest",
+    },
+    {
+      id: "notifications",
+      title: "Notificaciones",
+      icon: <Bell className="size-4" />,
+      link: "/dashboard/notifications",
+      badge: unreadCount > 0 ? unreadCount : undefined,
+    },
+    {
+      id: "petitions",
+      title: "Mis peticiones",
+      icon: <StickyNoteIcon className="size-4" />,
+      link: "/dashboard/petitions",
+    },
+    {
+      id: "postulations",
+      title: "Mis postulaciones",
+      icon: <ContactRoundIcon className="size-4" />,
+      link: "/dashboard/postulations",
+    },
+    {
+      id: "conversations",
+      title: "Mis Conversaciones",
+      icon: <MessageCircle className="size-4" />,
+      link: "/dashboard/chat",
+    },
+  ];
 
   return (
     <Sidebar variant="floating" collapsible="icon">
@@ -102,7 +131,7 @@ export function AppSidebar() {
             : "flex-row items-center justify-between"
         )}
       >
-        <a href="#" className="flex items-center gap-2">
+        <a href="/dashboard" className="flex items-center gap-2">
           <Logo className="h-8 w-8" />
           {!isCollapsed && (
             <span className="font-semibold text-black dark:text-white">
@@ -121,7 +150,7 @@ export function AppSidebar() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
-          <NotificationsPopover notifications={sampleNotifications} />
+          <NotificationsPopover />
           <ThemeToggleButton
             className="h-6 w-6 "
             blur

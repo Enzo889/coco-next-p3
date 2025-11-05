@@ -129,7 +129,7 @@ export default function MyPetitionsList({
                   setIsDetailOpen(true);
                 }}
                 className="mt-4 w-full"
-                variant="outline"
+                variant="ghost"
               >
                 Ver Detalles
               </Button>

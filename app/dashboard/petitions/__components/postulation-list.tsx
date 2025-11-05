@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { MessageCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
+import { TYPE_PETITION } from "@/types/type_petition.enum";
 
 interface PostulationsListProps {
   petitionId: number;
@@ -47,12 +48,70 @@ export default function PostulationsList({
     }
   };
 
-  const handleSelectWinner = async (postulationId: number) => {
+  const handleSelectWinner = async (
+    postulationId: number,
+    postulation: IPostulation
+  ) => {
     try {
       await api.updatePostulation(postulationId, { winner: true });
+      try {
+        const petition = await api.getPetition(Number(postulation.idPetition));
+        if (postulation.idProvider) {
+          await api.createNotification({
+            idProvider: Number(postulation.idProvider),
+            type: TYPE_PETITION.petitionSelected,
+            message: `¡Felicidades! Tu postulación fue seleccionada en: ${petition.description?.substring(
+              0,
+              40
+            )}...`,
+            viewed: false,
+            idUserUpdate: Number(postulation.idProvider),
+            idUserCreate: Number(postulation.idProvider),
+            deleted: false,
+          });
+        }
+      } catch (notificationError) {
+        console.error(" Error sending winner notification:", notificationError);
+      }
+
+      try {
+        const allPostulations = await api.getPostulations();
+        const otherPostulations = allPostulations.filter(
+          (p) =>
+            p.idPetition === postulation.idPetition &&
+            p.idpostulation !== postulationId &&
+            !p.winner
+        );
+
+        const petition = await api.getPetition(Number(postulation.idPetition));
+
+        for (const rejected of otherPostulations) {
+          if (rejected.idProvider) {
+            await api.createNotification({
+              idProvider: Number(rejected.idProvider),
+              type: TYPE_PETITION.petitionRejected,
+              message: `Lamentablemente, tu postulación no fue seleccionada en: ${petition.description?.substring(
+                0,
+                40
+              )}...`,
+              viewed: false,
+              idUserUpdate: Number(rejected.idProvider),
+              idUserCreate: Number(rejected.idProvider),
+              deleted: false,
+            });
+          }
+        }
+      } catch (rejectionError) {
+        console.error(
+          "[v0] Error sending rejection notifications:",
+          rejectionError
+        );
+      }
+
       toast.success("Exito", {
-        description: "Ganador seleccionado",
+        description: "Ganador seleccionado y notificaciones enviadas",
       });
+
       loadPostulations();
     } catch (error) {
       console.error("Error selecting winner:", error);
@@ -147,9 +206,12 @@ export default function PostulationsList({
             {!postulation.winner ? (
               <Button
                 onClick={() =>
-                  handleSelectWinner(postulation.idpostulation || 1)
+                  handleSelectWinner(
+                    postulation.idpostulation || 1,
+                    postulation
+                  )
                 }
-                variant="outline"
+                variant="ghost"
                 className="w-full mt-2"
               >
                 Seleccionar como Ganador
