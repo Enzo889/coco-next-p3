@@ -84,13 +84,14 @@ export default function HomePage() {
   const activeProjectsCount = myPetitions.filter(
     (p: IPetition) => p.idState === 1
   ).length;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const totalPostulationsReceived = postulations.filter((post: any) => {
-    const petitionForPost = petitions.find(
-      (p: IPetition) => p.idPetition === post.idPetition
-    );
-    return petitionForPost?.idUserCreate === session?.user.id;
-  }).length;
+  const totalPostulationsReceived = postulations.filter(
+    (post: IPostulation) => {
+      const petitionForPost = petitions.find(
+        (p: IPetition) => p.idPetition === Number(post.idPetition)
+      );
+      return petitionForPost?.idUserCreate === session?.user.id;
+    }
+  ).length;
 
   const successRate = 92;
 

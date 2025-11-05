@@ -22,31 +22,42 @@ import { useSession } from "next-auth/react";
 export function NotificationsPopover() {
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const [loading, setLoading] = useState(true);
-  const { data: session } = useSession();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const { data: session, status } = useSession();
 
   useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        setLoading(true);
-        const data = await api.getNotifications();
-        const recentNotifications = data
-          .filter((n) => !n.viewed)
-          .sort(
-            (a, b) =>
-              new Date(b.dateCreate!).getTime() -
-              new Date(a.dateCreate!).getTime()
-          )
-          .slice(0, 5);
-        setNotifications(recentNotifications);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (status === "authenticated" && session?.user?.id) {
+      const fetchNotifications = async () => {
+        try {
+          setLoading(true);
+          const data = await api.getNotifications();
+          const userNotifications = data.filter(
+            (notif) => notif.idProvider === session?.user?.id
+          );
 
-    fetchNotifications();
-  }, []);
+          const unread = userNotifications.filter((n) => !n.viewed).length;
+          setUnreadCount(unread);
+
+          const recentNotifications = userNotifications
+            .filter((n) => !n.viewed)
+            .sort(
+              (a, b) =>
+                new Date(b.dateCreate!).getTime() -
+                new Date(a.dateCreate!).getTime()
+            )
+            .slice(0, 5);
+          setNotifications(recentNotifications);
+        } catch (error) {
+          console.error("Error fetching notifications:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchNotifications();
+    }
+  }, [status, session?.user.id]);
 
   const handleNotificationClick = async (
     notificationId: number | undefined
@@ -72,9 +83,9 @@ export function NotificationsPopover() {
           aria-label="Open notifications"
         >
           <BellIcon className="size-5" />
-          {notifications.length > 0 && (
+          {unreadCount > 0 && (
             <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
-              {notifications.length}
+              {unreadCount}
             </span>
           )}
         </Button>
@@ -105,7 +116,7 @@ export function NotificationsPopover() {
                 handleNotificationClick(notification.idNotification)
               }
             >
-              <Avatar className="size-8 flex-shrink-0">
+              <Avatar className="size-8 shrink-0">
                 <AvatarFallback>
                   {notification.type?.charAt(0).toUpperCase()}
                 </AvatarFallback>

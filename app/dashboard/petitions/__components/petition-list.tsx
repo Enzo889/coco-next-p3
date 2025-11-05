@@ -5,10 +5,12 @@ import type { INCategory } from "@/types/category.interface";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import PetitionDetailDialog from "./petition-detail.dialog";
+import { api } from "@/app/api/service";
+import { IPostulation } from "@/types/postulation.interface";
 
 interface MyPetitionsListProps {
   petitions: IPetition[];
@@ -23,6 +25,32 @@ export default function MyPetitionsList({
     null
   );
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [postulationCounts, setPostulationCounts] = useState<
+    Record<number, number>
+  >({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPostulationCounts = async () => {
+      try {
+        const allPostulations = await api.getPostulations();
+        const counts: Record<number, number> = {};
+
+        allPostulations.forEach((postulation: IPostulation) => {
+          const petitionId = Number(postulation.idPetition);
+          counts[petitionId] = (counts[petitionId] || 0) + 1;
+        });
+
+        setPostulationCounts(counts);
+      } catch (error) {
+        console.error("[v0] Error fetching postulations:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPostulationCounts();
+  }, []);
 
   const getCategoryName = (categoryId: number) => {
     return (
@@ -120,7 +148,13 @@ export default function MyPetitionsList({
                 </div>
                 <div>
                   <p className="text-muted-foreground">Postulantes</p>
-                  <p className="font-medium">6666666666666666</p>
+                  <p className="font-medium">
+                    {isLoading
+                      ? "-"
+                      : petition.idPetition
+                      ? postulationCounts[petition.idPetition] || 0
+                      : 0}
+                  </p>
                 </div>
               </div>
               <Button
@@ -143,7 +177,7 @@ export default function MyPetitionsList({
           petition={selectedPetition}
           isOpen={isDetailOpen}
           onClose={() => setIsDetailOpen(false)}
-          categoryName={getCategoryName(selectedPetition.idTypePetition || 0)}
+          categoryName={getCategoryName(selectedPetition.idCategory || 0)}
         />
       )}
     </>

@@ -15,6 +15,9 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import PostulationsList from "./postulation-list";
 import PostulationForm from "./postulation-form";
+import { useEffect, useState } from "react";
+import { api } from "@/app/api/service";
+import { IPostulation } from "@/types/postulation.interface";
 
 interface PetitionDetailDialogProps {
   petition: IPetition;
@@ -29,6 +32,33 @@ export default function PetitionDetailDialog({
   onClose,
   categoryName,
 }: PetitionDetailDialogProps) {
+  const [postulationCounts, setPostulationCounts] = useState<
+    Record<number, number>
+  >({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPostulationCounts = async () => {
+      try {
+        const allPostulations = await api.getPostulations();
+        const counts: Record<number, number> = {};
+
+        allPostulations.forEach((postulation: IPostulation) => {
+          const petitionId = Number(postulation.idPetition);
+          counts[petitionId] = (counts[petitionId] || 0) + 1;
+        });
+
+        setPostulationCounts(counts);
+      } catch (error) {
+        console.error("[v0] Error fetching postulations:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPostulationCounts();
+  }, []);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -98,7 +128,13 @@ export default function PetitionDetailDialog({
                 <p className="text-muted-foreground text-xs font-medium">
                   Postulantes
                 </p>
-                <p className="font-semibold">7777777777777</p>
+                <p className="font-semibold">
+                  {isLoading
+                    ? "-"
+                    : petition.idPetition
+                    ? postulationCounts[petition.idPetition] || 0
+                    : 0}
+                </p>{" "}
               </div>
             </div>
           </div>
