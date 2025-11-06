@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { IPostulation } from "@/types/postulation.interface";
-import { api } from "@/app/api/service";
+import { api, usersApi } from "@/app/api/service";
 import { toast } from "sonner";
 import { MessageCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -24,6 +24,7 @@ export default function PostulationsList({
   const router = useRouter();
   const [postulations, setPostulations] = useState<IPostulation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userNames, setUserNames] = useState<Record<string, string>>({});
   const [redirecting, setRedirecting] = useState<number | null>(null);
 
   useEffect(() => {
@@ -38,6 +39,20 @@ export default function PostulationsList({
         (p) => p.idPetition === petitionId.toString()
       );
       setPostulations(filtered);
+
+      const names: Record<string, string> = {};
+      for (const postulation of filtered) {
+        if (postulation.idProvider && !names[postulation.idProvider]) {
+          try {
+            const user = await usersApi.getUser(Number(postulation.idProvider));
+            names[postulation.idProvider] = user.name || "Usuario desconocido";
+          } catch (error) {
+            names[postulation.idProvider] = "Usuario desconocido";
+            console.log("error cargando el nombre", error);
+          }
+        }
+      }
+      setUserNames(names);
     } catch (error) {
       console.error("Error loading postulations:", error);
       toast.error("Error", {
@@ -103,7 +118,7 @@ export default function PostulationsList({
         }
       } catch (rejectionError) {
         console.error(
-          "[v0] Error sending rejection notifications:",
+          " Error sending rejection notifications:",
           rejectionError
         );
       }
@@ -155,7 +170,12 @@ export default function PostulationsList({
   };
 
   if (loading) {
-    return <div className="text-center py-8">Cargando postulaciones...</div>;
+    return (
+      <div className="flex items-center justify-center">
+        {" "}
+        <Spinner />{" "}
+      </div>
+    );
   }
 
   if (postulations.length === 0) {
@@ -176,7 +196,7 @@ export default function PostulationsList({
             <div className="flex justify-between items-start gap-4">
               <div className="flex-1">
                 <CardTitle className="text-lg">
-                  Postulación #{postulation.idpostulation}
+                  {userNames[postulation.idProvider || ""] || "Cargando..."}
                 </CardTitle>
                 {postulation.winner && (
                   <Badge className="mt-2 bg-green-600">Ganador</Badge>

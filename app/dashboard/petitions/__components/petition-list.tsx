@@ -43,7 +43,7 @@ export default function MyPetitionsList({
 
         setPostulationCounts(counts);
       } catch (error) {
-        console.error("[v0] Error fetching postulations:", error);
+        console.error("Error fetching postulations:", error);
       } finally {
         setIsLoading(false);
       }

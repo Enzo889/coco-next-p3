@@ -9,12 +9,10 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
+
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import PostulationsList from "./postulation-list";
-import PostulationForm from "./postulation-form";
 import { useEffect, useState } from "react";
 import { api } from "@/app/api/service";
 import { IPostulation } from "@/types/postulation.interface";
@@ -138,29 +136,11 @@ export default function PetitionDetailDialog({
               </div>
             </div>
           </div>
+          <h3 className="font-bold text-2xl text-center border rounded-2xl w-full p-4 ">
+            Postulaciones
+          </h3>
 
-          {/* Tabs */}
-          <Tabs defaultValue="postulate" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="postulate">Postularme</TabsTrigger>
-              <TabsTrigger value="postulations">Postulaciones</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="postulate">
-              <Card>
-                <CardContent className="pt-6">
-                  <PostulationForm
-                    petitionId={petition.idPetition || 5}
-                    onSuccess={onClose}
-                  />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="postulations">
-              <PostulationsList petitionId={petition.idPetition || 5} />
-            </TabsContent>
-          </Tabs>
+          <PostulationsList petitionId={petition.idPetition || 5} />
         </div>
       </DialogContent>
     </Dialog>

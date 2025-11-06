@@ -7,7 +7,7 @@ import type { IPetition } from "@/types/petition.interface";
 import type { INCategory } from "@/types/category.interface";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { api } from "@/app/api/service";
+import { api, usersApi } from "@/app/api/service";
 import { toast } from "sonner";
 import PostulationsList from "../../petitions/__components/postulation-list";
 import PostulationForm from "../../petitions/__components/postulation-form";
@@ -25,6 +25,7 @@ export default function PetitionDetailPage() {
   const [loading, setLoading] = useState(true);
   const [showPostulationForm, setShowPostulationForm] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
+  const [creatorName, setCreatorName] = useState<string>("Cargando...");
 
   useEffect(() => {
     if (status === "authenticated" && petitionId) {
@@ -40,10 +41,16 @@ export default function PetitionDetailPage() {
 
       setIsCreator(petitionData.idUserCreate === session?.user?.id);
 
+      if (petitionData.idUserCreate) {
+        const userData = await usersApi.getUser(petitionData.idUserCreate);
+        setCreatorName(userData.name || "Usuario desconocido");
+      }
+
       const categoriesData = await api.getCategories();
       setCategories(categoriesData);
     } catch (error) {
       console.error("Error loading petition:", error);
+      setCreatorName("Usuario desconocido");
       toast.error("Error", {
         description: "No se pudo cargar la petición",
       });
@@ -106,7 +113,7 @@ export default function PetitionDetailPage() {
           <Card className="p-6 md:p-8">
             <div className="mb-6">
               <h1 className="text-3xl font-bold mb-2">
-                Petición #{petition.idPetition}
+                Petición de {creatorName}
               </h1>
               <div className="flex gap-2 text-sm text-muted-foreground">
                 <span className="px-3 py-1 rounded-full bg-muted">

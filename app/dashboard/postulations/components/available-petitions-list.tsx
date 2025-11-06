@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { IPetition } from "@/types/petition.interface";
 import type { INCategory } from "@/types/category.interface";
@@ -14,10 +14,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { usersApi } from "@/app/api/service";
 
 interface AvailablePetitionsListProps {
   petitions: IPetition[];
   categories: INCategory[];
+}
+
+interface UserCache {
+  [key: number]: string;
 }
 
 const ITEMS_PER_PAGE = 5;
@@ -28,12 +33,47 @@ export default function AvailablePetitionsList({
 }: AvailablePetitionsListProps) {
   const [filter, setFilter] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [userNames, setUserNames] = useState<UserCache>({});
+
+  useEffect(() => {
+    const fetchUserNames = async () => {
+      const userIds = petitions
+        .map((p) => p.idUserCreate)
+        .filter((id): id is number => id !== null && id !== undefined);
+
+      const uniqueUserIds = [...new Set(userIds)];
+      const newUserNames: UserCache = { ...userNames };
+
+      for (const userId of uniqueUserIds) {
+        if (!newUserNames[userId]) {
+          try {
+            const user = await usersApi.getUser(userId);
+            newUserNames[userId] = user.name || `Usuario ${userId}`;
+          } catch (error) {
+            console.log(`[v0] Error fetching user ${userId}:`, error);
+            newUserNames[userId] = `Usuario ${userId}`;
+          }
+        }
+      }
+
+      setUserNames(newUserNames);
+    };
+
+    if (petitions.length > 0) {
+      fetchUserNames();
+    }
+  }, [petitions]);
 
   const getCategoryName = (idCategory: number) => {
     return (
       categories.find((c) => c.idCategory === idCategory)?.name ||
       "Sin categoría"
     );
+  };
+
+  const getUserName = (idUserCreate: number | null): string => {
+    if (!idUserCreate) return "Usuario desconocido";
+    return userNames[idUserCreate] || "Cargando...";
   };
 
   const filteredPetitions = petitions.filter((petition) => {
@@ -110,7 +150,7 @@ export default function AvailablePetitionsList({
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold mb-2">
-                    Petición #{petition.idPetition}
+                    Petición de {getUserName(petition.idUserCreate)}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-2">
                     Categoría: {getCategoryName(petition.idCategory || 0)}
@@ -142,8 +182,8 @@ export default function AvailablePetitionsList({
 
       <div className="flex items-center justify-between mt-6 border rounded-xl p-4">
         <p className="text-sm text-muted-foreground">
-          {startIndex + 1} a {Math.min(endIndex, filteredPetitions.length)} de{" "}
-          {filteredPetitions.length} peticiones
+          {startIndex + 1} - {Math.min(endIndex, filteredPetitions.length)} de{" "}
+          {filteredPetitions.length}
         </p>
         <div className="flex gap-2">
           <Button
