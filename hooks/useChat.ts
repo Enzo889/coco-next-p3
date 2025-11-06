@@ -49,6 +49,12 @@ export const useChat = ({ socket, currentUserId }: UseChatOptions) => {
     }
   }, []);
 
+  const totalUnread = conversations.reduce(
+    (sum, conv) => sum + (conv.unreadCount || 0), // Asegurarse de que el campo exista y sea seguro
+    0
+  );
+
+
   // Enviar mensaje
   const sendMessage = useCallback(
     (receiverId: number, content: string, petitionId?: number) => {
@@ -196,6 +202,7 @@ export const useChat = ({ socket, currentUserId }: UseChatOptions) => {
     typingUsers,
     onlineUsers,
     unreadCount,
+    totalUnread,
     sendMessage,
     markAsRead,
     startTyping,

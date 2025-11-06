@@ -28,12 +28,18 @@ import { INotification } from "@/types/notification.interface";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { api } from "@/app/api/service";
+import { useChat } from "@/hooks/useChat";
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
   const { data: session, status } = useSession();
   const [unreadCount, setUnreadCount] = useState(0);
+
+  const { totalUnread, loadConversations } = useChat({
+    socket: null,
+    currentUserId: session?.user?.id || null,
+  });
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.id) {
@@ -51,11 +57,19 @@ export function AppSidebar() {
         }
       };
 
+      loadConversations();
+
+      const intervalConversation = setInterval(loadConversations, 10000);
+
       loadUnreadCount();
-      const interval = setInterval(loadUnreadCount, 5000);
-      return () => clearInterval(interval);
+      const intervalNotification = setInterval(loadUnreadCount, 5000);
+
+      return () => {
+        clearInterval(intervalConversation);
+        clearInterval(intervalNotification);
+      };
     }
-  }, [status, session?.user?.id]);
+  }, [status, session?.user?.id, loadConversations]);
 
   const dashboardRoutes: Route[] = [
     {
@@ -94,6 +108,7 @@ export function AppSidebar() {
       title: "Mis Conversaciones",
       icon: <MessageCircle className="size-4" />,
       link: "/dashboard/chat",
+      badge: totalUnread > 0 ? totalUnread : undefined,
     },
   ];
 
