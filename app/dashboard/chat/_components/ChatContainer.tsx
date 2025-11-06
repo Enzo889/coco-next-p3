@@ -25,6 +25,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { usersApi } from "@/app/api/service";
 
 export const ChatContainer: React.FC = () => {
   const { data: session } = useSession();
@@ -49,12 +50,15 @@ export const ChatContainer: React.FC = () => {
   const [showSidebar] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [petitionId, setPetitionId] = useState<number | null>(null);
+  const [petitionCreatorName, setPetitionCreatorName] = useState<string>("");
 
   useEffect(() => {
     if (isConnected) {
       loadConversations();
     }
   }, [isConnected, loadConversations]);
+
+  const userIdParam = searchParams.get("userId");
 
   // Manejar parámetros de URL (cuando viene desde postulaciones)
   useEffect(() => {
@@ -75,6 +79,22 @@ export const ChatContainer: React.FC = () => {
       }, 1000);
     }
   }, [searchParams, isConnected]);
+
+  useEffect(() => {
+    const fetchPetitionCreator = async () => {
+      if (petitionId) {
+        try {
+          const user = await usersApi.getUser(Number(userIdParam));
+          setPetitionCreatorName(user.name);
+        } catch (error) {
+          console.error("Error fetching petition creator:", error);
+          setPetitionCreatorName("Usuario desconocido");
+        }
+      }
+    };
+
+    fetchPetitionCreator();
+  }, [petitionId, userIdParam]);
 
   const handleSelectConversation = async (userId: number) => {
     setSelectedUserId(userId);
@@ -254,9 +274,9 @@ export const ChatContainer: React.FC = () => {
                     <h3 className="font-semibold text-gray-900 text-[15px]">
                       {selectedUserName}
                     </h3>
-                    {petitionId && (
+                    {petitionId && petitionCreatorName && (
                       <p className="text-xs text-blue-600">
-                        Petición #{petitionId}
+                        {petitionCreatorName}
                       </p>
                     )}
                     {isUserTyping ? (
