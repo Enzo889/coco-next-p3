@@ -198,8 +198,10 @@ export default function PostulationsList({
                 <CardTitle className="text-lg">
                   {userNames[postulation.idProvider || ""] || "Cargando..."}
                 </CardTitle>
-                {postulation.winner && (
+                {postulation.winner ? (
                   <Badge className="mt-2 bg-green-600">Ganador</Badge>
+                ) : (
+                  ""
                 )}
               </div>
             </div>
@@ -231,8 +233,9 @@ export default function PostulationsList({
                     postulation
                   )
                 }
+                disabled={!postulation.winner}
                 variant="ghost"
-                className="w-full mt-2"
+                className="w-full mt-2 disabled:bg-red-800 "
               >
                 Seleccionar como Ganador
               </Button>

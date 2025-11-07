@@ -7,6 +7,7 @@ import {
   LibraryBigIcon,
   MessageCircle,
   StickyNoteIcon,
+  Menu,
 } from "lucide-react";
 
 import {
@@ -29,12 +30,21 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { api } from "@/app/api/service";
 import { useChat } from "@/hooks/useChat";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
   const { data: session, status } = useSession();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const { totalUnread, loadConversations } = useChat({
     socket: null,
@@ -113,50 +123,79 @@ export function AppSidebar() {
   ];
 
   return (
-    <Sidebar variant="floating" collapsible="icon">
-      <SidebarHeader
-        className={cn(
-          "flex md:pt-3.5",
-          isCollapsed
-            ? "flex-row items-center justify-between gap-y-4 md:flex-col md:items-start md:justify-start"
-            : "flex-row items-center justify-between"
-        )}
+    <>
+      {/* Sidebar para escritorio */}
+      <Sidebar
+        variant="floating"
+        collapsible="icon"
+        className="hidden md:block"
       >
-        <a href="/dashboard" className="flex items-center gap-2">
-          <Logo className="h-8 w-8" />
-          {!isCollapsed && (
-            <span className="font-semibold text-black dark:text-white">
-              Coco
-            </span>
-          )}
-        </a>
-
-        <motion.div
-          key={isCollapsed ? "header-collapsed" : "header-expanded"}
+        <SidebarHeader
           className={cn(
-            "flex items-center gap-2",
-            isCollapsed ? "flex-row md:flex-col-reverse" : "flex-row"
+            "flex md:pt-3.5",
+            isCollapsed
+              ? "flex-row items-center justify-between gap-y-4 md:flex-col md:items-start md:justify-start"
+              : "flex-row items-center justify-between"
           )}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
         >
-          <NotificationsPopover />
-          <ThemeToggleButton
-            className="h-6 w-6 "
-            blur
-            variant="rectangle"
-            start="left-right"
-          />
-          <SidebarTrigger />
-        </motion.div>
-      </SidebarHeader>
-      <SidebarContent className="gap-4 px-2 py-4">
-        <DashboardNavigation routes={dashboardRoutes} />
-      </SidebarContent>
-      <SidebarFooter className="px-2">
-        <NavUser />
-      </SidebarFooter>
-    </Sidebar>
+          <a href="/dashboard" className="flex items-center gap-2">
+            <Logo className="h-8 w-8" />
+            {!isCollapsed && (
+              <span className="font-semibold text-black dark:text-white">
+                Coco
+              </span>
+            )}
+          </a>
+
+          <motion.div
+            key={isCollapsed ? "header-collapsed" : "header-expanded"}
+            className={cn(
+              "flex items-center gap-2",
+              isCollapsed ? "flex-row md:flex-col-reverse" : "flex-row"
+            )}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            <NotificationsPopover />
+            <ThemeToggleButton
+              className="h-6 w-6 "
+              blur
+              variant="rectangle"
+              start="left-right"
+            />
+            <SidebarTrigger />
+          </motion.div>
+        </SidebarHeader>
+        <SidebarContent className="gap-4 px-2 py-4">
+          <DashboardNavigation routes={dashboardRoutes} />
+        </SidebarContent>
+        <SidebarFooter className="px-2">
+          <NavUser />
+        </SidebarFooter>
+      </Sidebar>
+
+      {/* Sidebar para mobile */}
+      <div className="md:hidden w-full flex justify-end items-center px-4 py-6  absolute ">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="size-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-0">
+            <SheetHeader className="p-4 border-b">
+              <SheetTitle>Menú</SheetTitle>
+            </SheetHeader>
+            <div className="p-4 flex flex-col gap-4">
+              <DashboardNavigation routes={dashboardRoutes} />
+              <div className="mt-auto">
+                <NavUser />
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </>
   );
 }
