@@ -233,7 +233,7 @@ export default function PostulationsList({
                     postulation
                   )
                 }
-                disabled={!postulation.winner}
+                disabled={postulation.winner}
                 variant="ghost"
                 className="w-full mt-2 disabled:bg-red-800 "
               >

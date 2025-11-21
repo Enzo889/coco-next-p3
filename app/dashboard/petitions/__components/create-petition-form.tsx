@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import type { INCategory } from "@/types/category.interface";
 import type { IPetition } from "@/types/petition.interface";
@@ -31,12 +31,26 @@ export default function CreatePetitionForm({
 }: CreatePetitionFormProps) {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
+  const [category, setCategories] = useState<INCategory[]>([]);
   const [formData, setFormData] = useState({
     description: "",
     selectedCategory: "",
     dateSince: "",
     dateUntil: "",
   });
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await api.getCategories();
+        setCategories(data);
+      } catch (err) {
+        console.error("Failed to load categories", err);
+        setCategories([]);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -120,8 +134,11 @@ export default function CreatePetitionForm({
         )
         .map((ui) => ui.idUser);
 
-      const notificationMessage = `Nueva petición #${
-        petition.idPetition
+      const notificationMessage = `Nueva petición en ${
+        petition.idCategory ===
+        category.find((cat) => cat.idCategory === categoryId)?.idCategory
+          ? category.find((cat) => cat.idCategory === categoryId)?.name
+          : "Sin Categoria"
       }: ${petition.description?.substring(0, 50)}...`;
 
       // Crear notificación para cada usuario interesado

@@ -53,19 +53,19 @@ const Navbar = () => {
           <nav className="hidden md:flex items-center gap-6 lg:gap-8">
             <button
               onClick={() => scrollToSection("inicio")}
-              className="text-sm lg:text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="text-sm cursor-pointer lg:text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Inicio
             </button>
             <button
               onClick={() => scrollToSection("caracteristicas")}
-              className="text-sm lg:text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="text-sm cursor-pointer lg:text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Características
             </button>
             <button
               onClick={() => scrollToSection("como-funciona")}
-              className="text-sm lg:text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="text-sm cursor-pointer lg:text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Cómo Funciona
             </button>
@@ -121,7 +121,7 @@ const Navbar = () => {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => signOut()}
-                        className="text-destructive focus:text-destructive"
+                        className="text-destructive  cursor-pointer focus:text-destructive"
                       >
                         <LogOut className="mr-2 h-4 w-4" />
                         <span>Cerrar Sesión</span>

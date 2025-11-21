@@ -7,6 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 export default function ChatPage() {
   const { status } = useSession();
 
+
   if (status === "loading") {
     return (
       <div className="relative h-screen w-screen flex items-center justify-center">

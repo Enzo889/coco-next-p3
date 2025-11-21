@@ -15,6 +15,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LockIcon, MailIcon } from "lucide-react";
+import { Metadata } from "next";
 
 export default function LoginPage() {
   const [errors, setErrors] = useState<string[]>([]);
